@@ -6,8 +6,7 @@ from flask_appbuilder.models.group import aggregate_count
 from flask_appbuilder.models.sqla.interface import SQLAInterface
 
 from . import appbuilder, db
-from .models import Contact, ContactGroup, Gender, vyrobek, sklad
-
+from .models import Contact, ContactGroup, Gender, vyrobek, Sklad
 
 def fill_gender():
     try:
@@ -17,6 +16,22 @@ def fill_gender():
     except Exception:
         db.session.rollback()
 
+
+class VyrobekModelView(ModelView):
+    datamodel = SQLAInterface(vyrobek)
+    list_columns = ["nazev", "serial_number"]
+
+class SkladModelView(ModelView):
+    datamodel = SQLAInterface(Sklad)
+    list_columns = ["nazev", "datum", "ks", "stav"]
+
+appbuilder.add_view(
+    VyrobekModelView, "List Vyrobky", icon="fa-folder-open-o", category="Vyrobky"
+)
+
+appbuilder.add_view(
+    SkladModelView, "List Sklady", icon="fa-folder-open-o", category="Sklady"
+)    
 
 class ContactModelView(ModelView):
     datamodel = SQLAInterface(Contact)
@@ -89,13 +104,6 @@ def pretty_year(value):
 class ContactTimeChartView(GroupByChartView):
     datamodel = SQLAInterface(Contact)
 
-
-
-class skladView(ModelView):
-    datamodel = SQLAInterface(sklad)
-    #related_views = [vyrobekView]
-    #datamodel = db.session.query(sklad)
-
     chart_title = "Grouped Birth contacts"
     chart_type = "AreaChart"
     label_columns = ContactModelView.label_columns
@@ -111,32 +119,24 @@ class skladView(ModelView):
             "series": [(aggregate_count, "group")],
         },
     ]
-class vyrobekView(ModelView):
-    datamodel = SQLAInterface(vyrobek)
-    #datamodel = db.session.query(vyrobek)
-    #related_views = [skladView]
-
-
 
 
 db.create_all()
-#fill_gender()
-#appbuilder.add_view(
-#    GroupModelView,
-#    "List Groups",
-#    icon="fa-folder-open-o",
-#    category="Contacts",
-#    category_icon="fa-envelope",
-#)
-#appbuilder.add_view(
-#    ContactModelView, "List Contacts", icon="fa-envelope", category="Contacts"
-#)
-appbuilder.add_view(vyrobekView, "Vyrobek", icon="fa-envelope", category="vyrobek")
-appbuilder.add_view(skladView, "Sklad", icon="fa-envelope", category="vyrobek")
-#appbuilder.add_separator("Contacts")
-#appbuilder.add_view(
-#    ContactTimeChartView,
-#    "Contacts Birth Chart",
-#    icon="fa-dashboard",
-#    category="Contacts",
-#)
+fill_gender()
+appbuilder.add_view(
+    GroupModelView,
+    "List Groups",
+    icon="fa-folder-open-o",
+    category="Contacts",
+    category_icon="fa-envelope",
+)
+appbuilder.add_view(
+    ContactModelView, "List Contacts", icon="fa-envelope", category="Contacts"
+)
+appbuilder.add_separator("Contacts")
+appbuilder.add_view(
+    ContactTimeChartView,
+    "Contacts Birth Chart",
+    icon="fa-dashboard",
+    category="Contacts",
+)

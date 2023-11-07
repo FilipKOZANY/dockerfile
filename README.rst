@@ -1,15 +1,15 @@
-Base Skeleton to start your application using Flask-AppBuilder
---------------------------------------------------------------
+Quick How to Example
+--------------------
 
-- Install it::
+Simple contacts application.
 
-	pip install flask-appbuilder
-	git clone https://github.com/dpgaspar/Flask-AppBuilder-Skeleton.git
+Insert test data::
 
-- Run it::
+    $ python testdata.py
 
-	fabmanager run
+Run it::
 
-
-That's it!!
+    $ export FLASK_APP=app/__init__.py
+    $ flask fab create-admin
+    $ flask run
 

@@ -7,32 +7,6 @@ from sqlalchemy.orm import relationship
 mindate = datetime.date(datetime.MINYEAR, 1, 1)
 
 
-
-
-class vyrobek(Model):
-    id = Column(Integer, primary_key=True)
-    nazev = Column(String(50), unique=True, nullable=False)
-    sn = Column(Integer)
-
-    #sklady = relationship('sklad', backref='vyrobek', lazy=True)
-
-    def __repr__(self):
-        return self.id
-
-class sklad(Model):
-    id = Column(Integer, primary_key=True)
-    datum = Column(Date)
-    ks = Column(Integer)
-    stav = Column(Boolean)
-    #Vyrobek = relationship('vyrobek')
-
-    #vyrobek_id = Column(Integer, ForeignKey('vyrobek.id'), nullable=False)
-
-    def __repr__(self):
-        return self.id
-
-
-
 class ContactGroup(Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(50), unique=True, nullable=False)
@@ -71,3 +45,26 @@ class Contact(Model):
     def year(self):
         date = self.birthday or mindate
         return datetime.datetime(date.year, 1, 1)
+    
+
+class vyrobek(Model):
+    id = Column(Integer, primary_key=True)
+    nazev = Column(String(64), unique=True, nullable=False)
+    serial_number = Column(Integer, unique=True)     
+    
+    def __repr__(self):
+        return self.name
+    
+class Sklad(Model):
+    id = Column(Integer, primary_key=True)
+    nazev = Column(String(64), unique=True, nullable=False)
+    datum = Column(Date, nullable=True)
+    ks = Column(Integer, nullable=True)     
+    stav = Column(Boolean, nullable=True) 
+    
+    def __repr__(self):
+        return self.name    
+    
+
+
+

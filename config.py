@@ -1,111 +1,85 @@
 import os
-from flask_appbuilder.security.manager import (
-    AUTH_OID,
-    AUTH_REMOTE_USER,
-    AUTH_DB,
-    AUTH_LDAP,
-    AUTH_OAUTH,
-)
+
+from flask_appbuilder.const import AUTH_DB
+from flask_appbuilder.exceptions import PasswordComplexityValidationError
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-# Your App secret key
+CSRF_ENABLED = True
 SECRET_KEY = "\2\1thisismyscretkey\1\2\e\y\y\h"
 
-# The SQLAlchemy connection string.
-#SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "app.db")
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:example@db/flask'
-# SQLALCHEMY_DATABASE_URI = 'postgresql://root:password@localhost/myapp'
-#SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
-# Flask-WTF flag for CSRF
-CSRF_ENABLED = True
+OPENID_PROVIDERS = [
+    {"name": "Google", "url": "https://www.google.com/accounts/o8/id"},
+    {"name": "Yahoo", "url": "https://me.yahoo.com"},
+    {"name": "AOL", "url": "http://openid.aol.com/<username>"},
+    {"name": "Flickr", "url": "http://www.flickr.com/<username>"},
+    {"name": "MyOpenID", "url": "https://www.myopenid.com"},
+]
 
-# ------------------------------
-# GLOBALS FOR APP Builder
-# ------------------------------
-# Uncomment to setup Your App name
-# APP_NAME = "My App Name"
+# SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.join(basedir, "app.db")
+# SQLALCHEMY_DATABASE_URI = 'mysql://username:password@mysqlserver.local/quickhowto'
+# SQLALCHEMY_DATABASE_URI = 'postgresql://scott:tiger@localhost:5432/myapp'
+# SQLALCHEMY_ECHO = True
+SQLALCHEMY_DATABASE_URI = os.getenv('SQLALCHEMY_DATABASE_URI')
+SQLALCHEMY_POOL_RECYCLE = 3
 
-# Uncomment to setup Setup an App icon
-# APP_ICON = "static/img/logo.jpg"
-
-# ----------------------------------------------------
-# AUTHENTICATION CONFIG
-# ----------------------------------------------------
-# The authentication type
-# AUTH_OID : Is for OpenID
-# AUTH_DB : Is for database (username/password()
-# AUTH_LDAP : Is for LDAP
-# AUTH_REMOTE_USER : Is for using REMOTE_USER from web server
-AUTH_TYPE = AUTH_DB
-
-# Uncomment to setup Full admin role name
-# AUTH_ROLE_ADMIN = 'Admin'
-
-# Uncomment to setup Public role name, no authentication needed
-# AUTH_ROLE_PUBLIC = 'Public'
-
-# Will allow user self registration
-# AUTH_USER_REGISTRATION = True
-
-# The default user self registration role
-# AUTH_USER_REGISTRATION_ROLE = "Public"
-
-# When using LDAP Auth, setup the ldap server
-# AUTH_LDAP_SERVER = "ldap://ldapserver.new"
-# AUTH_LDAP_USE_TLS = False
-
-# Uncomment to setup OpenID providers example for OpenID authentication
-# OPENID_PROVIDERS = [
-#    { 'name': 'Yahoo', 'url': 'https://me.yahoo.com' },
-#    { 'name': 'AOL', 'url': 'http://openid.aol.com/<username>' },
-#    { 'name': 'Flickr', 'url': 'http://www.flickr.com/<username>' },
-#    { 'name': 'MyOpenID', 'url': 'https://www.myopenid.com' }]
-# ---------------------------------------------------
-# Babel config for translations
-# ---------------------------------------------------
-# Setup default language
 BABEL_DEFAULT_LOCALE = "en"
-# Your application default translation path
 BABEL_DEFAULT_FOLDER = "translations"
-# The allowed translation for you app
 LANGUAGES = {
     "en": {"flag": "gb", "name": "English"},
     "pt": {"flag": "pt", "name": "Portuguese"},
     "pt_BR": {"flag": "br", "name": "Pt Brazil"},
     "es": {"flag": "es", "name": "Spanish"},
+    "fr": {"flag": "fr", "name": "French"},
     "de": {"flag": "de", "name": "German"},
     "zh": {"flag": "cn", "name": "Chinese"},
     "ru": {"flag": "ru", "name": "Russian"},
     "pl": {"flag": "pl", "name": "Polish"},
+    "el": {"flag": "gr", "name": "Greek"},
+    "ja_JP": {"flag": "jp", "name": "Japanese"},
 }
-# ---------------------------------------------------
-# Image and file configuration
-# ---------------------------------------------------
-# The file upload folder, when using models with files
+
+FAB_API_MAX_PAGE_SIZE = 100
+
+
+def custom_password_validator(password: str) -> None:
+    """
+    A simplistic example for a password validator
+    """
+    if len(password) < 8:
+        raise PasswordComplexityValidationError("Must have at least 8 characters")
+
+
+# FAB_PASSWORD_COMPLEXITY_VALIDATOR = custom_password_validator
+
+FAB_PASSWORD_COMPLEXITY_ENABLED = True
+
+# ------------------------------
+# GLOBALS FOR GENERAL APP's
+# ------------------------------
 UPLOAD_FOLDER = basedir + "/app/static/uploads/"
-
-# The image upload folder, when using models with images
 IMG_UPLOAD_FOLDER = basedir + "/app/static/uploads/"
-
-# The image upload url, when using models with images
 IMG_UPLOAD_URL = "/static/uploads/"
-# Setup image size default is (300, 200, True)
-# IMG_SIZE = (300, 200, True)
-
-# Theme configuration
-# these are located on static/appbuilder/css/themes
-# you can create your own and easily use them placing them on the same dir structure to override
-# APP_THEME = "bootstrap-theme.css"  # default bootstrap
-# APP_THEME = "cerulean.css"
+AUTH_TYPE = AUTH_DB
+# AUTH_LDAP_SERVER = "ldap://dc.domain.net"
+AUTH_ROLE_ADMIN = "Admin"
+AUTH_ROLE_PUBLIC = "Public"
+APP_NAME = "F.A.B. Example"
+APP_THEME = ""  # default
+# APP_THEME = "cerulean.css"      # COOL
 # APP_THEME = "amelia.css"
 # APP_THEME = "cosmo.css"
-# APP_THEME = "cyborg.css"
+# APP_THEME = "cyborg.css"       # COOL
 # APP_THEME = "flatly.css"
 # APP_THEME = "journal.css"
 # APP_THEME = "readable.css"
 # APP_THEME = "simplex.css"
-# APP_THEME = "slate.css"
-# APP_THEME = "spacelab.css"
+# APP_THEME = "slate.css"          # COOL
+# APP_THEME = "spacelab.css"      # NICE
 # APP_THEME = "united.css"
-# APP_THEME = "yeti.css"
+# APP_THEME = "darkly.css"
+# APP_THEME = "lumen.css"
+# APP_THEME = "paper.css"
+# APP_THEME = "sandstone.css"
+# APP_THEME = "solar.css"
+# APP_THEME = "superhero.css"
